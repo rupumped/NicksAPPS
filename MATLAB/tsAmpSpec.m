@@ -1,12 +1,12 @@
-function varargout = ssAmpSpec(varargin)
+function varargout = tsAmpSpec(varargin)
 %SSAMPSPEC single-sided amplitude spectrum
-%   [F,FDATA] = SSAMPSPEC(T,FDATA) returns the single-sided amplitude
+%   [F,FDATA] = TSAMPSPEC(T,FDATA) returns the two-sided amplitude
 %   spectrum of the DFT FDATA given its time domain T. The frequency
 %   response of the system is stored in FDATA vs. F
 %
-%   [F,FDATA] = SSAMPSPEC(FDATA) returns a normalized frequency F in [0,1]
+%   [F,FDATA] = TSAMPSPEC(FDATA) returns a normalized frequency F in [-1,1]
 %
-%   SSAMPSPEC(T,FDATA) and SSAMPSPEC(FDATA) folds FDATA along its Nyquist
+%   TSAMPSPEC(T,FDATA) and TSAMPSPEC(FDATA) shifts FDATA by its Nyquist
 %   frequency
 %
 %   See also FFT, SFT, OFT
@@ -23,20 +23,20 @@ else
 end
 
 N = numel(fdata);
-fdata = fdata(1:floor(N/2)+1);
-fdata = fdata/N;
-fdata(2:end-1) = 2*fdata(2:end-1);
+fdata = [fdata(floor(end/2)+1:end),fdata(1:floor(end/2))]/N;
 fdata = abs(fdata);                       % amplitude
 
 if nargout==1
     varargout{1} = fdata;
 else
     if nargin==1
-        f=linspace(0,1,N/2+1);
+        f=linspace(-1,1-2/N,N);
     else
         Fs = length(t)./(t(end)-t(1));
-        f = ((0:(N/2))/N)'*Fs;                    %[Hz] frequency
+        f = (((-(N/2-1):(N/2))-1)/N)'*Fs;                    %[Hz] frequency
     end
+    f(1)=[];
+    fdata(1)=[];
     varargout={f,fdata};
 end
 end
