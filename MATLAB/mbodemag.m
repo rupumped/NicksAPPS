@@ -15,6 +15,7 @@ function measurement = mbodemag(varargin)
 %   See also OFT, SFT
 %
 %   Written by Nick Selby Spring 2016
+
 measurement = varargin{1};
 if nargin == 1
     ftType = 'optimal';
