@@ -4,12 +4,14 @@ function varargout = tsAmpSpec(varargin)
 %   spectrum of the DFT FDATA given its time domain T. The frequency
 %   response of the system is stored in FDATA vs. F
 %
+%   [F,FDATA] = TSAMPSPEC(FDATA,FS) uses sampling frequency FS instead of
+%   time domain T.
+%
 %   [F,FDATA] = TSAMPSPEC(FDATA) returns a normalized frequency F in [-1,1]
 %
-%   TSAMPSPEC(T,FDATA) and TSAMPSPEC(FDATA) shifts FDATA by its Nyquist
-%   frequency
+%   TSAMPSPEC(...) shifts FDATA by its Nyquist frequency
 %
-%   See also FFT, SFT, OFT
+%   See also SSAMPSPEC, FFT, SFT, OFT
 %
 %   Written by Nick Selby Spring 2016
 
@@ -18,8 +20,14 @@ nargoutchk(1,2);
 if nargin==1
     fdata=varargin{:};
 else
-    t=varargin{1};
-    fdata=varargin{2};
+    if numel(varargin{2})==1
+        fdata = reshape(varargin{1},1,[]);
+        Fs = varargin{2};
+    else
+        t=varargin{1};
+        Fs = (length(t)-1)./(t(end)-t(1));
+        fdata=reshape(varargin{2},1,[]);
+    end
 end
 
 N = numel(fdata);
@@ -30,10 +38,9 @@ if nargout==1
     varargout{1} = fdata;
 else
     if nargin==1
-        f=linspace(-1,1-2/N,N);
+        f = linspace(-1,1-2/N,N);
     else
-        Fs = length(t)./(t(end)-t(1));
-        f = (((-(N/2-1):(N/2))-1)/N)'*Fs;                    %[Hz] frequency
+        f = (((-(N/2-1):(N/2))-1)/N)*Fs;                    %[Hz] frequency
     end
     f(1)=[];
     fdata(1)=[];

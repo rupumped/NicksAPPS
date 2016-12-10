@@ -1,8 +1,7 @@
-function fdata = oft(tdata)
+function fdata = oft(varargin)
 %OFT optimal Fourier transform
-%   FDATA = OFT(TDATA) returns the FFT of the time domain signal TDATA
-%   zero-padded such that the maximum amplitude response of the signal is
-%   optimized.
+%   OFT(TDATA) returns the FFT of the time domain signal TDATA zero-padded
+%   such that the maximum amplitude response of the signal is optimized.
 %
 %   For example, if an input time domain signal is a single-frequency
 %   signal TDATA=SIN(2*PI*T), taking FFT(TDATA) may induce spectral leakage
@@ -14,14 +13,41 @@ function fdata = oft(tdata)
 %   supposed to be tone bursts at 2.1 and 4.2 MHz, but whose center
 %   frequencies are often slightly off.
 %
+%   OFT(T,TDATA,F_BND) maximizes the amplitude within the frequency window
+%   F_BND(1) to F_BND(2). T is the time domain of the signal TDATA.
+%
 %   See also SFT, FFT
 %
 %   Written by Nick Selby Spring 2016
 
-N = length(tdata);
-% Find N which minimizes spectral leakage at largest amplitude
-while max(abs(fft(tdata,N+1)/(N+1))) > max(abs(fft(tdata,N)/N))
-    N = N+1;
+narginchk(1,3)
+switch nargin
+    case 1
+    tdata = varargin{1};
+    case 2
+        error('No support for two inputs')
+    case 3
+        t     = varargin{1};
+        tdata = varargin{2};
+        f_bnd = varargin{3};
 end
+
+N = length(tdata);
+
+% Find N which minimizes spectral leakage at largest amplitude
+if nargin == 1
+    while max(abs(fft(tdata,N+1)/(N+1))) > max(abs(fft(tdata,N)/N))
+        N = N+1;
+    end
+else
+    [f0,fdata0] = tsAmpSpec(t,fft(tdata,N  ));
+    [f1,fdata1] = tsAmpSpec(t,fft(tdata,N+1));
+    while max(fdata1(f1>=f_bnd(1) & f1<=f_bnd(2))) > max(fdata0(f0>=f_bnd(1) & f0<=f_bnd(2)))
+        N = N+1;
+        fdata0 = tsAmpSpec(t,fft(tdata,N  ));
+        fdata1 = tsAmpSpec(t,fft(tdata,N+1));
+    end
+end
+
 fdata = fft(tdata,N);
 end
