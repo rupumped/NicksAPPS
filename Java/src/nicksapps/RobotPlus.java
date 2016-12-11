@@ -23,6 +23,10 @@ public class RobotPlus extends Robot {
         board = new Keyboard(this);
     }
     
+    public Keyboard getBoard() {
+        return board;
+    }
+    
     public Point findInScreen(BufferedImage subimage) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = (int)screenSize.getWidth();
@@ -74,15 +78,19 @@ public class RobotPlus extends Robot {
         return imagesEqual;
     }
     
+    public void mouseMove(Point point) {
+        mouseMove(point.x,point.y);
+    }
+    
     public void click(Point point, int period) {
-        mouseMove(point.x, point.y);
+        mouseMove(point);
         mousePress(InputEvent.BUTTON1_DOWN_MASK);
         mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         delay(period);
     }
     
     public void click(Point point, BufferedImage period) {
-        mouseMove(point.x, point.y);
+        mouseMove(point);
         mousePress(InputEvent.BUTTON1_DOWN_MASK);
         mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         delayUntilLoad(period);

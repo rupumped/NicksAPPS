@@ -101,7 +101,7 @@ public class Keyboard {
         case '*': doType(VK_ASTERISK); break;
         case '(': doType(VK_LEFT_PARENTHESIS); break;
         case ')': doType(VK_RIGHT_PARENTHESIS); break;
-        case '_': doType(VK_UNDERSCORE); break;
+        case '_': doType(VK_SHIFT,VK_UNDERSCORE); break;
         case '+': doType(VK_PLUS); break;
         case '\t': doType(VK_TAB); break;
         case '\n': doType(VK_ENTER); break;
