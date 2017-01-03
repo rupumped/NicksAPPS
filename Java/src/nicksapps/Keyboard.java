@@ -127,7 +127,7 @@ public class Keyboard {
         }
     }
 
-    private void doType(int... keyCodes) {
+    public void doType(int... keyCodes) {
         doType(keyCodes, 0, keyCodes.length);
     }
 

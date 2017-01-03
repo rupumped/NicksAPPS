@@ -41,16 +41,11 @@ public class RobotPlus extends Robot {
                 }
             }
         }
-        throw new RuntimeException("Subimage does not exist on screen");
+        return DUMMY;
     }
     
     public boolean screenContains(BufferedImage subimage) {
-        try {
-            findInScreen(subimage);
-            return true;
-        } catch (RuntimeException e) {
-            return false;
-        }
+        return !DUMMY.equals(findInScreen(subimage));
     }
     
     public void delayUntilLoad(BufferedImage img) {
@@ -82,22 +77,27 @@ public class RobotPlus extends Robot {
         mouseMove(point.x,point.y);
     }
     
+    public void click(int button_mask) {
+        mousePress(button_mask);
+        mouseRelease(button_mask);
+    }
+    
     public void click(Point point, int period) {
         mouseMove(point);
-        mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        click(LEFT);
         delay(period);
     }
     
     public void click(Point point, BufferedImage period) {
         mouseMove(point);
-        mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+        click(LEFT);
         delayUntilLoad(period);
     }
     
     public void click(BufferedImage img, String loc, int period) {
         Point pt = findInScreen(img);
+        if (pt.equals(DUMMY))
+            throw new RuntimeException("Image does not exist.");
         int w = img.getWidth();
         int h = img.getHeight();
         switch (loc) {
@@ -115,4 +115,14 @@ public class RobotPlus extends Robot {
     public void type(CharSequence characters) {
         board.type(characters);
     }
+    
+    public void type(CharSequence characters, int period) {
+        type(characters);
+        delay(period);
+    }
+    
+    public static Point DUMMY = new Point(-1,-1);
+    public static int LEFT   = InputEvent.BUTTON1_DOWN_MASK;
+    public static int MIDDLE = InputEvent.BUTTON2_DOWN_MASK;
+    public static int RIGHT  = InputEvent.BUTTON3_DOWN_MASK;
 }
