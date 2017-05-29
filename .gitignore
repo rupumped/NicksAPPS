@@ -1,2 +1,5 @@
 story.txt
 Camp.xls
+/Java/dist/
+/Java/build/
+Java/nbproject/private/*

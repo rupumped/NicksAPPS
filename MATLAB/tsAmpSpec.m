@@ -7,7 +7,8 @@ function varargout = tsAmpSpec(varargin)
 %   [F,FDATA] = TSAMPSPEC(FDATA,FS) uses sampling frequency FS instead of
 %   time domain T.
 %
-%   [F,FDATA] = TSAMPSPEC(FDATA) returns a normalized frequency F in [-1,1]
+%   [F,FDATA] = TSAMPSPEC(FDATA) returns a normalized frequency F in
+%   [-.5,.5]
 %
 %   TSAMPSPEC(...) shifts FDATA by its Nyquist frequency
 %
@@ -30,6 +31,7 @@ else
     end
 end
 
+fdata = reshape(fdata,1,[]);
 N = numel(fdata);
 fdata = [fdata(floor(end/2)+1:end),fdata(1:floor(end/2))]/N;
 fdata = abs(fdata);                       % amplitude
@@ -38,7 +40,7 @@ if nargout==1
     varargout{1} = fdata;
 else
     if nargin==1
-        f = linspace(-1,1-2/N,N);
+        f = linspace(-.5,.5-1/N,N);
     else
         f = (((-(N/2-1):(N/2))-1)/N)*Fs;                    %[Hz] frequency
     end
