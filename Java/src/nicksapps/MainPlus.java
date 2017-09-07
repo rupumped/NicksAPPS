@@ -8,13 +8,26 @@ import java.util.Scanner;
 
 public class MainPlus
 {
+   /**
+    * Reports an error message to the user via JOptionPane
+    * 
+    * @param message to relay to the user
+    */
     public static void endByCatch(String message)
     {
         JOptionPane.showMessageDialog(null, message, UFE, JOptionPane.ERROR_MESSAGE);
         System.exit(0);
     }
     
-    public static void endByCatch(String message, Object... a)                                      //ends the program and explains the error
+   /**
+    * Reports an error message to the user via JOptionPane and writes and closes
+    * a list of Objects. Will close any objects of interface Closeable, but will
+    * only write WritableWorkbooks
+    * 
+    * @param message to relay to the user
+    * @param a       objects to write/close
+    */
+    public static void endByCatch(String message, Object... a)
     {
         JOptionPane.showMessageDialog(null, message, UFE, JOptionPane.ERROR_MESSAGE);
         for(int i = 0; i < a.length; i++)
@@ -48,6 +61,11 @@ public class MainPlus
         System.exit(0);
     }
 
+   /**
+    * Allow the user to decide whether or not to halt a program's process.
+    * 
+    * @param message to print after "Should I stop?"
+    */
     public static  void shouldIStop(String message)
     {
         int decision = JOptionPane.showConfirmDialog(null, "Should I stop?\n" + message, UFE, JOptionPane.YES_NO_OPTION);
@@ -55,6 +73,14 @@ public class MainPlus
             System.exit(0);
     }
 
+   /**
+    * Allows the user to decide whether or not to halt a program's process, then
+    * writes and closes a list of Objects. Will close any objects of interface
+    * Closeable, but will only write WritableWorkbooks.
+    * 
+    * @param message to print after "Should I stop?"
+    * @param a       objects to write/close
+    */
     public static  void shouldIStop(String message, Object... a)
     {
         int decision = JOptionPane.showConfirmDialog(null, "Should I stop?\n" + message, UFE, JOptionPane.YES_NO_OPTION);
@@ -92,12 +118,22 @@ public class MainPlus
         }
     }
     
+   /**
+    * Prints "Okay. Nevermind." to the console window and exits.
+    */
     public static void userStop()
     {
         System.out.print("Okay. Nevermind.");
         System.exit(0);
     }
     
+   /**
+    * Prints "Okay. Nevermind." to the console window and exits, then writes and
+    * closes a list of Objects. Will close any objects of interface Closeable,
+    * but will only write WritableWorkbooks.
+    * 
+    * @param a       objects to write/close
+    */
     public static void userStop(Object... a)                                                        //the program ends by user request
     {
         System.out.print("Okay. Nevermind.");
@@ -132,18 +168,34 @@ public class MainPlus
         System.exit(0);
     }
     
+   /**
+    * Prints "Checkpoint" to the console window, then exits.
+    */
     public static void testStop()
     {
         System.err.println("\nCheckpoint");
         System.exit(0);
     }
 
+   /**
+    * Prints custom message to the console window, then exits.
+    * 
+    * @param o custom message to print
+    */
     public static void testStop(Object o)
     {
         System.err.println(o);
         System.exit(0);
     }
 
+   /**
+    * Prints custom message to the console window, then exits, then writes and
+    * closes a list of Objects. Will close any objects of interface Closeable,
+    * but will only write WritableWorkbooks.
+    * 
+    * @param o custom message to print
+    * @param a objects to write/close
+    */
     public static void testStop(Object o, Object... a)
     {
         System.err.println(o);

@@ -1,19 +1,33 @@
 package nicksapps;
 
+// There are better classes for this which exist elsewhere.
 import java.util.*;
 
 public final class NumberList extends ArrayList<Number>
 {
+   /**
+    * Primary constructor
+    */
     public NumberList()
     {
         super();
     }
 
+   /**
+    * Initializes NumberList with already-existant collection
+    * 
+    * @param c list with which to initialize
+    */
     public NumberList(Collection c)
     {
         super(c);
     }
 
+   /**
+    * Initializes NumberList with enough space
+    * 
+    * @param initialCapacity amount of free space allocated to NumberList
+    */
     public NumberList(int initialCapacity)
     {
         super(initialCapacity);

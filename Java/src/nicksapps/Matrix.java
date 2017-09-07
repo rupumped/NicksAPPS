@@ -1,9 +1,16 @@
 package nicksapps;
 
+// Just use jeigen. It's a better class. I wrote this in high school.
 import java.util.*;
 
 public class Matrix<E>
 {
+   /**
+    * Primary constructor. A matrix of nulls.
+    * 
+    * @param rows    number of rows
+    * @param columns number of columns
+    */
     public Matrix(int rows, int columns)
     {
         r = rows;
@@ -18,11 +25,21 @@ public class Matrix<E>
         }
     }
 
+   /**
+    * The number of rows in the matrix.
+    * 
+    * @return the number of rows
+    */
     public int getRows()
     {
         return r;
     }
 
+   /**
+    * The number of columns in the matrix
+    * 
+    * @return the number of columns
+    */
     public int getColumns()
     {
         return c;

@@ -6,6 +6,12 @@ import java.net.*;
 
 public class StringPlus
 {
+   /**
+    * The last token of a StringTokenizer
+    * 
+    * @param tokenizer
+    * @return          the last token of tokenizer
+    */
     public static String lastToken(StringTokenizer tokenizer)
     {
         String token = null;
@@ -14,6 +20,13 @@ public class StringPlus
         return token;
     }
 
+   /**
+    * Whether or not a given String is of a specific format
+    * 
+    * @param str    String to test
+    * @param format formats to test
+    * @return       true if and only if str matches all formats
+    */
     public static boolean isFormat(String str, String... format)
     {
         if (str.length() == 0)
@@ -70,6 +83,12 @@ public class StringPlus
         throw new UnsupportedOperationException();
     }
 
+   /**
+    * Converts HTML code to WYSIWYG text
+    * 
+    * @param code HTML code
+    * @return     decoded contents
+    */
     public static String removeHTML(String code)
     {
         int i;
@@ -89,13 +108,19 @@ public class StringPlus
         return str;
     }
 
+   /**
+    * Split string along regular expression patterns
+    * 
+    * @param s      String to split
+    * @param regex1 first regular expression
+    * @param regex2 second regular expression
+    * @return       
+    */
     public static String[] split(String s, char regex1, char regex2)
     {
         StringList strList = new StringList();
-        while(true)
-        {
-            try
-            {
+        while(true) {
+            try {
                 int index = s.indexOf(regex1);
                 if(index == -1)
                     break;
@@ -104,8 +129,7 @@ public class StringPlus
                 strList.add(e);
                 s = s.substring(e.length() + 1);
             }
-            catch(StringIndexOutOfBoundsException e)
-            {
+            catch(StringIndexOutOfBoundsException e) {
                 break;
             }
         }

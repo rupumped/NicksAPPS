@@ -1,5 +1,7 @@
 package nicksapps;
 
+// This is not mine. I found it online somewhere.
+
 import java.awt.AWTException;
 import java.awt.Robot;
 import static java.awt.event.KeyEvent.*;
