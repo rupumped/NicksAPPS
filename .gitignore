@@ -1,5 +1,9 @@
 story.txt
 Camp.xls
-/Java/dist/
-/Java/build/
-/Java/nbproject/private/
+
+Java/dist/
+Java/build/
+Java/nbproject/private/
+Java/nbbuild/
+Java/nbdist/
+Java/.nb-gradle/
