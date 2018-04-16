@@ -11,10 +11,11 @@ import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 
 public class RobotPlus extends Robot {
-    private Keyboard board;
+    private final Keyboard board;
     
    /**
     * Basic constructor.
+     * @throws java.awt.AWTException
     */
     public RobotPlus() throws AWTException {
         super();
@@ -24,6 +25,8 @@ public class RobotPlus extends Robot {
    /**
     * If you've already initialized a Robot, you can incorporate it into this
     * RobotPlus as an input to the constructor.
+     * @param screen GraphicsDevice for computer monitor
+     * @throws java.awt.AWTException
     */
     public RobotPlus(GraphicsDevice screen) throws AWTException {
         super(screen);
@@ -41,7 +44,7 @@ public class RobotPlus extends Robot {
     
    /**
     * Locates an image in the current screenshot. If the image does not exist in
-    * the current screenshot, returns the Point (-1,-1
+    * the current screenshot, returns the Point (-1,-1)
     * 
     * @param subimage BufferedImage you want to locate in the current
     *                 screenshot
@@ -69,7 +72,7 @@ public class RobotPlus extends Robot {
     * Whether or not the screen contains a particular image.
     * 
     * @param subimage BufferedImage you want to test for in the current
-    * screenshot
+    *                 screenshot
     * @return         boolean true if the image does exist in the current
     *                 screenshot, false otherwise
     */
@@ -85,6 +88,99 @@ public class RobotPlus extends Robot {
     */
     public void delayUntilLoad(BufferedImage img) {
         while (!screenContains(img)) {}
+    }
+    
+   /**
+    * Delays processing until a given image appears on screen or a timeout is
+    * reached.
+    * 
+    * @param img     BufferedImage to wait for before allowing processing to
+    *                continue
+    * @param timeout amount of milliseconds after which to end
+    * @return        true iff method timed out
+    */
+    public boolean delayUntilLoad(BufferedImage img, long timeout) {
+        long startTime = System.currentTimeMillis();
+        while (!screenContains(img)) {
+            if (System.currentTimeMillis()-startTime<timeout)
+                return true;
+        }
+        return false;
+    }
+    
+   /**
+    * Delays processing until any of a set of images appears on the screen
+    * 
+    * @param imgArr array of BufferedImages
+    * @return       index of first image in imgArr to appear
+    */
+    public int delayUntilLoadAny(BufferedImage[] imgArr) {
+        while (true) {
+            for (int i=0; i<imgArr.length; i++) {
+                if (screenContains(imgArr[i]))
+                    return i;
+            }
+        }
+    }
+    
+   /**
+    * Delays processing until any of a set of images appears on the screen or a 
+    * timeout is reached
+    * 
+    * @param imgArr  array of BufferedImages
+    * @param timeout amount of milliseconds after which to end
+    * @return        index of first image in imgArr to appear or -1 if timeout
+    *                is reached
+    */
+    public int delayUntilLoadAny(BufferedImage[] imgArr, long timeout) {
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis()<startTime+timeout) {
+            for (int i=0; i<imgArr.length; i++) {
+                if (screenContains(imgArr[i]))
+                    return i;
+            }
+        }
+        return -1;
+    }
+    
+   /**
+    * Delays processing until all of a set of images appear on screen
+    * simultaneously
+    * 
+    * @param imgArr array of BufferedImages
+    */
+    public void delayUntilLoadAll(BufferedImage[] imgArr) {
+        boolean loaded;
+        do {
+            loaded = true;
+            for (BufferedImage img : imgArr) {
+                loaded &= screenContains(img);
+                if (!loaded)
+                    break;
+            }
+        } while (!loaded);
+    }
+    
+   /**
+    * Delays processing until all of a set of images appear on screen
+    * simultaneously
+    * 
+    * @param imgArr  array of BufferedImages
+    * @param timeout amount of milliseconds after which to end
+    * @return        true iff method timed out
+    */
+    public boolean delayUntilLoadAll(BufferedImage[] imgArr, long timeout) {
+        long startTime = System.currentTimeMillis();
+        boolean loaded;
+        do {
+            loaded = true;
+            for (BufferedImage img : imgArr) {
+                loaded &= screenContains(img);
+                if (!loaded)
+                    break;
+            }
+        } while (!loaded && System.currentTimeMillis()<startTime+timeout);
+        return !loaded;
     }
     
    /**
@@ -181,17 +277,25 @@ public class RobotPlus extends Robot {
     public void click(BufferedImage img, String loc, int period) {
         Point pt = findInScreen(img);
         if (pt.equals(DUMMY))
-            throw new RuntimeException("Image does not exist.");
+            throw new RuntimeException("Image does not exist on screen.");
         int w = img.getWidth();
         int h = img.getHeight();
         switch (loc) {
             case "TL": break;
+            case "TC": pt.x += w/2;
             case "TR": pt.x += w; break;
+            case "L":  pt.y += h/2; break;
             case "C":  pt.x += w/2;
                        pt.y += h/2; break;
+            case "R":  pt.x += w;
+                       pt.y += h/2; break;
             case "BL": pt.y += h; break;
+            case "BC": pt.x += w/2;
+                       pt.y += h; break;
             case "BR": pt.x += w;
                        pt.y += h; break;
+            default:
+                throw new RuntimeException(loc + " is not a valid argument.");
         }
         click(pt, period);
     }
@@ -215,6 +319,32 @@ public class RobotPlus extends Robot {
     public void type(CharSequence characters, int period) {
         type(characters);
         delay(period);
+    }
+    
+   /**
+    * Type a sequence of keys with the keyboard
+    * @param keys KeyEvent constants to type
+    */
+    public void type(int... keys) {
+        for (int key : keys) {
+            this.keyPress(key);
+            this.keyRelease(key);
+        }
+    }
+    
+   /**
+    * Press and hold some keys, then type others.
+    * @param holdArr keys to press and hold while typing
+    * @param typeArr keys to type
+    */
+    public void holdType(int[] holdArr, int[] typeArr) {
+        for (int h : holdArr) {
+            this.keyPress(h);
+        }
+        type(typeArr);
+        for (int h : holdArr) {
+            this.keyRelease(h);
+        }
     }
     
     public static Point DUMMY = new Point(-1,-1);
