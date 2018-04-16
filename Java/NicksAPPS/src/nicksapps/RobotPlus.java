@@ -223,6 +223,46 @@ public class RobotPlus extends Robot {
     }
     
    /**
+    * Moves the mouse to a given subimage on the screen
+    * 
+    * @param img the image to which to move the mouse
+    * @param loc where you want to click on the image.
+    *            ______________
+    *           |TL  | TC |  TR|
+    *           |____|____|____|
+    *           |    |    |    |
+    *           |L   | C  |  R |
+    *           |____|____|____|
+    *           |    |    |    |
+    *           |BL__|_BC_|__BR|
+    */
+    public void mouseMove(BufferedImage img, String loc) {
+        Point pt = findInScreen(img);
+        if (pt.equals(DUMMY))
+            throw new RuntimeException("Image does not exist on screen.");
+        int w = img.getWidth();
+        int h = img.getHeight();
+        switch (loc) {
+            case "TL": break;
+            case "TC": pt.x += w/2;
+            case "TR": pt.x += w; break;
+            case "L":  pt.y += h/2; break;
+            case "C":  pt.x += w/2;
+                       pt.y += h/2; break;
+            case "R":  pt.x += w;
+                       pt.y += h/2; break;
+            case "BL": pt.y += h; break;
+            case "BC": pt.x += w/2;
+                       pt.y += h; break;
+            case "BR": pt.x += w;
+                       pt.y += h; break;
+            default:
+                throw new RuntimeException(loc + " is not a valid argument.");
+        }
+        mouseMove(pt);
+    }
+    
+   /**
     * Click the mouse
     * 
     * @param button_mask the button of the mouse to press, typically 
@@ -269,35 +309,40 @@ public class RobotPlus extends Robot {
     * releases.
     * 
     * @param img    the image on which to click
-    * @param loc    where you want to click on the image. "TL" => top-left, "TR"
-    *               => top-right, "C" => center, "BL" => bottom-left, "BR" =>
-    *               bottom-right
-    * @param period how long to wait before releasing the mouse button
+    * @param loc    see mouseMove(BufferedImage, String)
     */
-    public void click(BufferedImage img, String loc, int period) {
-        Point pt = findInScreen(img);
-        if (pt.equals(DUMMY))
-            throw new RuntimeException("Image does not exist on screen.");
-        int w = img.getWidth();
-        int h = img.getHeight();
-        switch (loc) {
-            case "TL": break;
-            case "TC": pt.x += w/2;
-            case "TR": pt.x += w; break;
-            case "L":  pt.y += h/2; break;
-            case "C":  pt.x += w/2;
-                       pt.y += h/2; break;
-            case "R":  pt.x += w;
-                       pt.y += h/2; break;
-            case "BL": pt.y += h; break;
-            case "BC": pt.x += w/2;
-                       pt.y += h; break;
-            case "BR": pt.x += w;
-                       pt.y += h; break;
-            default:
-                throw new RuntimeException(loc + " is not a valid argument.");
-        }
-        click(pt, period);
+    public void click(BufferedImage img, String loc) {
+        this.mouseMove(img, loc);
+        this.click(LEFT);
+    }
+    
+   /**
+    * Clicks and drags the mouse from one point on the screen to another
+    * 
+    * @param start Point to click
+    * @param stop  Point to which to drag
+    */
+    public void clickAndDrag(Point start, Point stop) {
+        this.mouseMove(start);
+        this.mousePress(LEFT);
+        this.mouseMove(stop);
+        this.mouseRelease(LEFT);
+    }
+    
+   /**
+    * Clicks and drags the mouse from one subimage on the screen to another
+    * 
+    * @param start    subimage at which to click
+    * @param startLoc see mouseMove(BufferedImage, String)
+    * @param stop     subimage to which to drag
+    * @param stopLoc  see mouseMove(BufferedImage, String)
+    */
+    public void clickAndDrag(BufferedImage start, String startLoc, 
+                             BufferedImage stop,  String stopLoc) {
+        this.mouseMove(start, startLoc);
+        this.mousePress(LEFT);
+        this.mouseMove(stop, stopLoc);
+        this.mouseRelease(LEFT);
     }
     
    /**
@@ -323,6 +368,7 @@ public class RobotPlus extends Robot {
     
    /**
     * Type a sequence of keys with the keyboard
+    * 
     * @param keys KeyEvent constants to type
     */
     public void type(int... keys) {
