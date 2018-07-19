@@ -95,3 +95,6 @@ Unwrap phase angle.
 
 ### VecAngle2
 Calculate angle between two vectors in R2.
+
+## License
+See the [license](license.txt) file for license rights and limitations (Unlicense).
