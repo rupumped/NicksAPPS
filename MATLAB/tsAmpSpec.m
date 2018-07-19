@@ -1,5 +1,5 @@
 function varargout = tsAmpSpec(varargin)
-%SSAMPSPEC single-sided amplitude spectrum
+%TSAMPSPEC two-sided amplitude spectrum
 %   [F,FDATA] = TSAMPSPEC(T,FDATA) returns the two-sided amplitude
 %   spectrum of the DFT FDATA given its time domain T. The frequency
 %   response of the system is stored in FDATA vs. F
