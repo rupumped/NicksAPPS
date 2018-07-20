@@ -1,16 +1,9 @@
 package nicksapps;
 
-// Just use jeigen. It's a better class. I wrote this in high school.
 import java.util.*;
 
 public class Matrix<E>
 {
-   /**
-    * Primary constructor. A matrix of nulls.
-    * 
-    * @param rows    number of rows
-    * @param columns number of columns
-    */
     public Matrix(int rows, int columns)
     {
         r = rows;
@@ -25,21 +18,11 @@ public class Matrix<E>
         }
     }
 
-   /**
-    * The number of rows in the matrix.
-    * 
-    * @return the number of rows
-    */
     public int getRows()
     {
         return r;
     }
 
-   /**
-    * The number of columns in the matrix
-    * 
-    * @return the number of columns
-    */
     public int getColumns()
     {
         return c;
@@ -58,6 +41,19 @@ public class Matrix<E>
             throw new MatrixException("Vector size: " + vector.size() + ". Rows: " + r);
         for(int i = 0; i < r; i++)
             set(i, column, vector.get(i));
+    }
+    
+    public void removeRow(int row)
+    {
+        array.remove(row);
+        r--;
+    }
+    
+    public void removeColumn(int col)
+    {
+        for (int i = 0; i < r; i++)
+            array.get(i).remove(col);
+        c--;
     }
 
     public void set(int row, int column, E element)
@@ -84,10 +80,54 @@ public class Matrix<E>
 
     public ArrayList<E> getColumn(int column)
     {
-        ArrayList<E> colVec = new ArrayList<E>(r);
+        ArrayList<E> colVec = new ArrayList<>(r);
         for(int i = 0; i < r; i++)
             colVec.add(get(i, column));
         return colVec;
+    }
+    
+    public Matrix<E> getSubMatrix(int startRow, int startColumn, int endRow, int endColumn)
+    {
+        Matrix<E> sub = new Matrix<>(endRow - startRow + 1, endColumn - startColumn + 1);
+        for (int row = 0; row < sub.getRows(); row++) {
+            for (int col = 0; col < sub.getColumns(); col++) {
+                sub.set(row, col, this.get(row + startRow, col + startColumn));
+            }
+        }
+        return sub;
+    }
+    
+    public boolean contains(E element)
+    {
+        for (int row = 0; row < r; row++) {
+            if (array.get(row).contains(element))
+                return true;
+        }
+        return false;
+    }
+    
+    public Matrix<E> cat(boolean dim, ArrayList<E> append)
+    {
+        Matrix<E> mat;
+        if (dim == VERTICAL) {
+            if (append.size() != this.getColumns())
+                throw new MatrixException("Dim Mismatch (Columns): " + append.size() + " onto " + this.getColumns());
+            mat = new Matrix<>(r + 1, c);
+            for (int row = 0; row < r; row++) {
+                mat.setRow(row, this.getRow(row));
+            }
+            mat.setRow(r, append);
+        }
+        else {
+            if (append.size() != this.getRows())
+                throw new MatrixException("Dim Mismatch (Rows): " + append.size() + " onto " + this.getRows());
+            mat = new Matrix<>(r, c + 1);
+            for (int col = 0; col < c; col++) {
+                mat.setColumn(col, this.getColumn(col));
+            }
+            mat.setColumn(c, append);
+        }
+        return mat;
     }
 
     @Override
@@ -106,4 +146,7 @@ public class Matrix<E>
     int r;
     int c;
     List<ArrayList<E>> array;
+    
+    public static final boolean VERTICAL = false;
+    public static final boolean HORIZONTAL = true;
 }
