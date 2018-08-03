@@ -1,10 +1,14 @@
 package nicksapps;
 
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import jxl.Workbook;
-import jxl.write.*;
 import javax.swing.JOptionPane;
-import java.util.Scanner;
+import javax.imageio.ImageIO;
+import jxl.write.WritableWorkbook;
 
 public class MainPlus
 {
@@ -43,7 +47,7 @@ public class MainPlus
                     {
                         wr.close();
                     }
-                    catch(WriteException e) {   }
+                    catch(Exception e) {   }
                 }
                 if(ob instanceof Workbook)
                 {
@@ -99,7 +103,7 @@ public class MainPlus
                         {
                             wr.close();
                         }
-                        catch(WriteException e) {   }
+                        catch(Exception e) {   }
                     }
                     if(ob instanceof Workbook)
                     {
@@ -150,7 +154,7 @@ public class MainPlus
                     {
                         wr.close();
                     }
-                    catch(WriteException e) {   }
+                    catch(Exception e) {   }
                 }
                 if(ob instanceof Workbook)
                 {
@@ -212,7 +216,7 @@ public class MainPlus
                     {
                         wr.close();
                     }
-                    catch(WriteException e) {   }
+                    catch(Exception e) {   }
                 }
                 if(ob instanceof Workbook)
                 {
@@ -228,6 +232,31 @@ public class MainPlus
             catch(IOException e) {  }
         }
         System.exit(0);
+    }
+    
+   /**
+    * Loads images from a given directory into a HashMap with their filename.
+    * Does not include the file extension in the filename.
+    * 
+    * @param  dir directory containing images
+    * @return     HashMap of filename (String) to contained image
+    *             (BufferedImage)
+    */
+    public static HashMap<String,BufferedImage> loadImages(String dir) {
+        File imDir = new File(dir);
+        File[] imFiles = imDir.listFiles();
+        HashMap<String,BufferedImage> images = new HashMap<>(imFiles.length);
+        for (File imFile : imFiles) {
+            String fn = imFile.getName();
+            int dotInd = fn.lastIndexOf(".");
+            String imName = fn.substring(0,dotInd);
+            try {
+                images.put(imName, ImageIO.read(new File(dir + '/' + fn)));
+            } catch (IOException e) {
+                System.err.println("Warning: Could not load file " + fn);
+            }
+        }
+        return images;
     }
     
     public static final String FNF = "Could not find file: ";                                       //generic FileNotFoundException

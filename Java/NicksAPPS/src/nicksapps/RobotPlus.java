@@ -101,8 +101,8 @@ public class RobotPlus extends Robot {
     */
     public boolean delayUntilLoad(BufferedImage img, long timeout) {
         long startTime = System.currentTimeMillis();
-        while (!screenContains(img)) {
-            if (System.currentTimeMillis()-startTime<timeout)
+        while (System.currentTimeMillis()-startTime<timeout) {
+            if (screenContains(img))
                 return true;
         }
         return false;
@@ -314,6 +314,20 @@ public class RobotPlus extends Robot {
     public void click(BufferedImage img, String loc) {
         this.mouseMove(img, loc);
         this.click(LEFT);
+    }
+    
+   /**
+    * Clicks on a sequence of images as they appear on the screen.
+    * 
+    * @param loc see mouseMove(BufferedImage, String)
+    * @param img for each BufferedImage, wait until the image loads on the
+    *            screen, then click it
+    */
+    public void clickSequence(String loc, BufferedImage... img) {
+        for (BufferedImage i : img) {
+            this.delayUntilLoad(i);
+            this.click(i, loc);
+        }
     }
     
    /**
