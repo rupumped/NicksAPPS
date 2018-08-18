@@ -3,6 +3,12 @@
 ## Java
 All apps are contained inside a NetBeans Project.
 
+### Dependencies
+Some of the files need the following libraries. Download the JAR's of the following API's and place them in the lib folder of the project:
+* [JXL](http://jexcelapi.sourceforge.net/)
+* [PDFBox](https://pdfbox.apache.org/)
+* [JCodec](http://jcodec.org/) (make sure you get both JARs!)
+
 ### ArraysPlus
 Additional Java methods that work on arrays. Includes multiple comparator sorting, case-agnostic String array operations, and primitive-to-reference array converters.
 
