@@ -27,6 +27,9 @@ Extends Robot to enable commonly desired functionality when trying to write bots
 ### ScannerPlus
 Additional Java methods that work with Scanners to parse text by skipping lines until the desired location in the text is reached.
 
+### ScreenRecorder
+A screen recorder that won't produce a watermarked video.
+
 ### StringList
 Extends ArrayList\<String\> to enable special manipulation on Lists of Strings. Includes concatenation and case-agnostic comparisons.
 
