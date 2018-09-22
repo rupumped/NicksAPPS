@@ -3,12 +3,14 @@ package nicksapps;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class RobotPlus extends Robot {
     private final Keyboard board;
@@ -404,6 +406,14 @@ public class RobotPlus extends Robot {
         type(typeArr);
         for (int h : holdArr) {
             this.keyRelease(h);
+        }
+    }
+    
+    public void printPoints() throws IOException {
+        while (true) {
+            Point cursor = MouseInfo.getPointerInfo().getLocation();
+            System.out.println("(" + cursor.x + "," + cursor.y + ")");
+            this.delay(100);
         }
     }
     
