@@ -69,6 +69,51 @@ public class RobotPlus extends Robot {
         }
         return DUMMY;
     }
+
+   /**
+    * Locates an image in the current screenshot. If the image does not exist in
+    * the current screenshot, throws an Exception.
+    *
+    * @param subimage BufferedImage you want to locate in the current screenshot
+    * @param loc      where you want to click on the image.
+    *            ______________
+    *           |TL  | TC |  TR|
+    *           |____|____|____|
+    *           |    |    |    |
+    *           |L   | C  |  R |
+    *           |____|____|____|
+    *           |    |    |    |
+    *           |BL__|_BC_|__BR|
+    * @return         Point in screen where the top-right corner of the subimage
+    *                 exists
+    */
+    public Point findInScreen(BufferedImage subimage, String loc) {
+        Point pt = findInScreen(subimage);
+        if (pt.equals(DUMMY))
+            throw new RuntimeException("Image does not exist on screen.");
+
+        int w = subimage.getWidth();
+        int h = subimage.getHeight();
+        switch (loc) {
+            case "TL": break;
+            case "TC": pt.x += w/2;
+            case "TR": pt.x += w; break;
+            case "L":  pt.y += h/2; break;
+            case "C":  pt.x += w/2;
+                       pt.y += h/2; break;
+            case "R":  pt.x += w;
+                       pt.y += h/2; break;
+            case "BL": pt.y += h; break;
+            case "BC": pt.x += w/2;
+                       pt.y += h; break;
+            case "BR": pt.x += w;
+                       pt.y += h; break;
+            default:
+                throw new RuntimeException(loc + " is not a valid argument.");
+        }
+
+        return pt;
+    }
     
    /**
     * Whether or not the screen contains a particular image.
@@ -228,40 +273,9 @@ public class RobotPlus extends Robot {
     * Moves the mouse to a given subimage on the screen
     * 
     * @param img the image to which to move the mouse
-    * @param loc where you want to click on the image.
-    *            ______________
-    *           |TL  | TC |  TR|
-    *           |____|____|____|
-    *           |    |    |    |
-    *           |L   | C  |  R |
-    *           |____|____|____|
-    *           |    |    |    |
-    *           |BL__|_BC_|__BR|
     */
     public void mouseMove(BufferedImage img, String loc) {
-        Point pt = findInScreen(img);
-        if (pt.equals(DUMMY))
-            throw new RuntimeException("Image does not exist on screen.");
-        int w = img.getWidth();
-        int h = img.getHeight();
-        switch (loc) {
-            case "TL": break;
-            case "TC": pt.x += w/2;
-            case "TR": pt.x += w; break;
-            case "L":  pt.y += h/2; break;
-            case "C":  pt.x += w/2;
-                       pt.y += h/2; break;
-            case "R":  pt.x += w;
-                       pt.y += h/2; break;
-            case "BL": pt.y += h; break;
-            case "BC": pt.x += w/2;
-                       pt.y += h; break;
-            case "BR": pt.x += w;
-                       pt.y += h; break;
-            default:
-                throw new RuntimeException(loc + " is not a valid argument.");
-        }
-        mouseMove(pt);
+        mouseMove(findInScreen(img, loc));
     }
     
    /**
