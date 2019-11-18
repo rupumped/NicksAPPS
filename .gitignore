@@ -5,3 +5,6 @@ Camp.xls
 /Java/NicksAPPS/build/
 /Java/NicksAPPS/dist/
 /Java/NicksAPPS/lib/*.jar
+
+Python/client_id.json
+Python/storage.json
