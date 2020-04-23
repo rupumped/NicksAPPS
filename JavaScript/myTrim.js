@@ -8,5 +8,6 @@
  * @return {string}    Trimmed string.
  */
 function myTrim(s, c) {
+	c = '(?:'+c+')';
 	return s.replace(new RegExp('^'+c+'+|'+c+'+$','gm'),'');
 }
