@@ -9,3 +9,6 @@ trim() for more than just whitespace.
 
 ### NumArray
 Subclass of Array that enables basic numeric operations on arrays of numbers.
+
+### roundTo
+toFixed() that returns numbers.
