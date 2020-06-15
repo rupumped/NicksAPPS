@@ -1,7 +1,7 @@
 # NicksAPPS
 
 ## Java
-All apps are contained inside a NetBeans Project.
+To automatically download dependencies and compile classes, run `./install.sh`.
 
 ### Dependencies
 Some of the files need the following libraries. Download the JAR's of the following API's and place them in the lib folder of the project:

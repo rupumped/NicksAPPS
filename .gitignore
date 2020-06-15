@@ -1,10 +1,8 @@
 story.txt
 Camp.xls
 
-/Java/NicksAPPS/nbproject/private/
-/Java/NicksAPPS/build/
-/Java/NicksAPPS/dist/
-/Java/NicksAPPS/lib/*.jar
+/Java/build/
+/Java/lib/*.jar
 
 Python/client_id.json
 Python/storage.json

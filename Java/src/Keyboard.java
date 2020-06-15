@@ -1,6 +1,6 @@
 package nicksapps;
 
-// This is not mine. I found it online somewhere.
+// Source: https://www.it-swarm.dev/cs/java/prevest-retezec-na-keyevents/967409774/
 
 import java.awt.AWTException;
 import java.awt.Robot;
