@@ -1,7 +1,7 @@
 /**
  * Trim() for more than just whitespace.
  *
- * Removes any substrings matching a given regular expression from both sides of a string.
+ * Removes any substrings matching a given regular expression from both sides of an input string.
  *
  * @param  {string}	s  String to be trimmed.
  * @param  {string} c  Regular expression to trimmed.
