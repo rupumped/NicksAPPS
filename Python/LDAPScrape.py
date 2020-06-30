@@ -65,10 +65,10 @@ with open(args.output_file, 'a+') as writefile:
 				if record_data:
 					try:
 						proc = pexpect.spawn(r'ldapsearch -LLL -x -h ldap -b "{0}" "uid="{1}"'.format(searchbase, alias))
+						proc.expect(pexpect.EOF)
 					except:
 						no_errors = False
 						break
-					proc.expect(pexpect.EOF)
 					ldap = proc.before
 
 					attrs = re.findall(r'(.+): (.+)', ldap, re.MULTILINE)
