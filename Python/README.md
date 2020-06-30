@@ -20,3 +20,19 @@ Or, to search a specific directory, use the `--d` argument.
 ```
 $ python DrivePermissionCheck.py --d path/to/folder
 ```
+
+### LDAPScrape
+Scrapes an LDAP directory given a list of user ID's. Returns database as a CSV.
+
+For example, if you want to collect the users whose ID's were contained in `input.csv`:
+```
+nselby,gpburdell,tbeaver
+```
+from an LDAP database using the query
+```
+("CN=Dev-India,OU=Distribution,DC=gp,DC=gl,DC=google,DC=com")
+```
+and store the output in `output.csv`, then you would enter the command:
+```
+python LDAPScrape.py input.csv output.csv -cn DEV-India -ou Distribution -dc gp gl google com
+```
