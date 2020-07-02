@@ -24,6 +24,11 @@ $ python DrivePermissionCheck.py --d path/to/folder
 ### LDAPScrape
 Scrapes an LDAP directory given a list of user ID's. Returns database as a CSV.
 
+Install dependencies using pip:
+```
+$ pip install --upgrade --user python-pexpect ldap-utils argparse
+```
+
 For example, if you want to collect the users whose ID's were contained in `input.csv`:
 ```
 nselby,gpburdell,tbeaver
