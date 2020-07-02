@@ -66,10 +66,12 @@ with open(args.output_file, 'a+') as writefile:
 					try:
 						proc = pexpect.spawn(r'ldapsearch -LLL -x -h ldap -b "{0}" "uid="{1}"'.format(searchbase, alias))
 						proc.expect(pexpect.EOF)
+						ldap = proc.before
+						if "Can't contact" in ldap:
+							raise
 					except:
 						no_errors = False
 						break
-					ldap = proc.before
 
 					attrs = re.findall(r'(.+): (.+)', ldap, re.MULTILINE)
 					writeRow = ['']*len(fields)
