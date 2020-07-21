@@ -9,7 +9,7 @@ Install dependencies using pip:
 $ pip install --upgrade --user google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
 ```
 
-Download credentials from https://console.developers.google.com/apis/. Add `client_id.json` and `storage.json` to the `Python` directory.
+Enable the Drive API here: https://developers.google.com/drive/api/v3/quickstart/python.
 
 Run the script in terminal:
 ```
