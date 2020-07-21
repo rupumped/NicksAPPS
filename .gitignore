@@ -4,5 +4,5 @@ Camp.xls
 /Java/build/
 /Java/lib/*.jar
 
-Python/client_id.json
-Python/storage.json
+Python/*.json
+Python/*.pickle

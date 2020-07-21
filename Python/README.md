@@ -20,6 +20,7 @@ Or, to search a specific directory, use the `--d` argument.
 ```
 $ python DrivePermissionCheck.py --d path/to/folder
 ```
+If you want the script to automatically disable link sharing for all files, enable the `--f` flag.
 
 ### LDAPScrape
 Scrapes an LDAP directory given a list of user ID's. Returns database as a CSV.
