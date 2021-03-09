@@ -42,3 +42,24 @@ and store the output in `output.csv`, then you would enter the command:
 ```
 python LDAPScrape.py input.csv output.csv -cn DEV-India -ou Distribution -dc gp gl google com
 ```
+
+### SlackMembersLDAPCheck
+Check Slack membership against an LDAP database.
+
+Install dependencies using pip:
+```
+$ pip install --upgrade --user python-pexpect ldap-utils argparse
+```
+
+Export and download the workspace's member list as a CSV from the admin panel. For example, if the file name is `slack-workspace-members.csv`, and the LDAP query was
+```
+("CN=Dev-India,OU=Distribution,DC=gp,DC=gl,DC=google,DC=com")
+```
+and you wanted to check that every email in the workspace corresponded to an alias containing the following LDAP information:
+```
+mitDirStudentYear: G
+```
+then you would enter the command:
+```
+python SlackMembersLDAPCheck.py slack-workspace-members.csv -cn DEV-India -ou Distribution -dc gp gl google com -crit mitDirStudentYear:\ G
+```
