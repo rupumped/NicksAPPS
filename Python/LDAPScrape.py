@@ -6,9 +6,9 @@ import pexpect, csv, math, sys, argparse, re, os
 parser = argparse.ArgumentParser(description='Scrape an LDAP directory')
 parser.add_argument('input_file', metavar='fin', type=str, help='Input CSV file containing aliases of uids to scrape')
 parser.add_argument('output_file', metavar='fout', type=str, help='Output CSV file for scraped information')
-parser.add_argument('-cn', type=str, nargs='+', help='Common name(s)')
-parser.add_argument('-ou', type=str, nargs='+', help='Organizational unit(s)')
-parser.add_argument('-dc', type=str, nargs='+', help='Domain component(s)')
+parser.add_argument('-cn', type=str, nargs='+', help='Common name(s)', default=[])
+parser.add_argument('-ou', type=str, nargs='+', help='Organizational unit(s)', default=['users','moira'])
+parser.add_argument('-dc', type=str, nargs='+', help='Domain component(s)', default=['mit','edu'])
 args = parser.parse_args()
 
 # Initialize header fields
@@ -53,7 +53,7 @@ if os.path.isfile(args.output_file):
 no_errors = True
 with open(args.output_file, 'a+') as writefile:
 	writer = csv.writer(writefile)
-	with open(args.input_file, 'rb') as readfile:
+	with open(args.input_file, 'r') as readfile:
 		reader = csv.reader(readfile, delimiter=',')
 		r = 0
 		pct = 0
@@ -64,9 +64,9 @@ with open(args.output_file, 'a+') as writefile:
 				r+=1
 				if record_data:
 					try:
-						proc = pexpect.spawn(r'ldapsearch -LLL -x -h ldap -b "{0}" "uid="{1}"'.format(searchbase, alias))
+						proc = pexpect.spawn(r'ldapsearch -LLL -x -h ldap -b "{0}" "uid"="{1}"'.format(searchbase, alias))
 						proc.expect(pexpect.EOF)
-						ldap = proc.before
+						ldap = proc.before.decode('utf-8')
 						if "Can't contact" in ldap:
 							raise
 					except:
@@ -100,9 +100,9 @@ with open(args.output_file, 'a+') as writefile:
 
 # Present data
 if no_errors:
-	with open(args.output_file, 'rb') as file:
+	with open(args.output_file, 'r') as file:
 		reader = csv.reader(file, delimiter=',')
-		with open('temp_'+args.output_file, 'wb') as temp_file:
+		with open('temp_'+args.output_file, 'w') as temp_file:
 			writer = csv.writer(temp_file)
 			writer.writerow(fields)
 			for row in reader:
