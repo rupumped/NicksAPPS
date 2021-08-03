@@ -30,7 +30,7 @@ searchbase = searchbase[:-1]
 # If the output file already exists, copy it without the fields into a temporary csv
 lastUID = ''
 if os.path.isfile(args.output_file):
-	with open(args.output_file, 'rb') as file:
+	with open(args.output_file, 'r') as file:
 		with open('temp_'+args.output_file, 'wb') as temp_file:
 			reader = csv.reader(file, delimiter=',')
 			writer = csv.writer(temp_file)
