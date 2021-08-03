@@ -15,12 +15,6 @@ Additional Java methods that work on arrays. Includes multiple comparator sortin
 ### MainPlus
 Methods I found myself copy-pasting too many times. Includes methods to neatly close and end if an Exception is caught and some debugging tools.
 
-### MathPlus
-Additional Java methods that perform mathematical operations such as reciprocal trigonometric functions and linear and geometric sequencing.
-
-### NumberList
-Extends ArrayList\<Number\> to enable mathematical operations on vectors of numbers. Includes summation, product, mean, etc.
-
 ### RobotPlus
 Extends Robot to enable commonly desired functionality when trying to write bots. Includes screen readers, special delays, and special click and type commands. Uses Keyboard.java.
 
