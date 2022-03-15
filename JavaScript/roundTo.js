@@ -5,7 +5,7 @@
  *
  * @param  {number}	num       Number to be rounded.
  * @param  {number} decimals  Number of decimals to which to round.
- * @return {number}           Rounded number
+ * @return {number}           Rounded number.
  */
 function roundTo(num, decimals) {
 	return parseFloat(num.toFixed(decimals));

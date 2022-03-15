@@ -4,6 +4,12 @@
 ### filterImage
 Generates filter to change color of monochromatic images.
 
+### interpBilinear
+Bilinear interpolation over a rectilinear grid.
+
+### issorted
+Checks to see if the input array is sorted in ascending order.
+
 ### JSONcopy
 Copy an object.
 
@@ -18,3 +24,6 @@ toFixed() that returns numbers.
 
 ### sleep
 Sleep for some milliseconds.
+
+### zeros
+2D array of zeros
