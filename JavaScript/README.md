@@ -13,6 +13,9 @@ Checks to see if the input array is sorted in ascending order.
 ### JSONcopy
 Copy an object.
 
+### katex-support
+Adapted from Murray Bourne's [KaTeX tag placement with no wrap](https://bourne2learn.com/math/katex/tag-placement_nowrap.html)
+
 ### myTrim
 trim() for more than just whitespace.
 
