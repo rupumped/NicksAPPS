@@ -44,37 +44,34 @@ public class RobotPlus extends Robot {
         return board;
     }
     
-   /**
-    * Locates an image in the current screenshot. If the image does not exist in
-    * the current screenshot, returns the Point (-1,-1)
-    * 
-    * @param subimage BufferedImage you want to locate in the current
-    *                 screenshot
-    * @return         Point in screen where the top-right corner of the subimage
-    *                 exists
-    */
-    public Point findInScreen(BufferedImage subimage) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int screenWidth = (int)screenSize.getWidth();
-        int screenHeight = (int)screenSize.getHeight();
-        BufferedImage screen = this.createScreenCapture(new Rectangle(screenWidth,screenHeight));
-        int subWidth = subimage.getWidth();
-        int subHeight = subimage.getHeight();
-        for (int screenRow = 0; screenRow < screenWidth - subWidth; screenRow++) {
-            for (int screenCol = 0; screenCol < screenHeight - subHeight; screenCol++) {
-                if (imgEqual(screen.getSubimage(screenRow, screenCol, subWidth, subHeight), subimage)) {
-                    return new Point(screenRow, screenCol);
+    /**
+     * Returns the x and y indices of the first occurrence of the specified
+     * subimage within a larger image. If no such subimage occurs in this larger
+     * image, then (-1,-1) is returned.
+     * 
+     * @param img    The larger image within which to search.
+     * @param subimg An image for which to search.
+     * @return       The x and y indices of the first occurrence of the subimage
+     *               in the larger image, or (-1,-1) if the subimage does not
+     *               occur.
+     */
+    public static Point indexOfSubImage(BufferedImage img, BufferedImage subimg) {
+        for (int x=0; x <= img.getWidth() - subimg.getWidth(); x++) {
+            for (int y=0; y <= img.getHeight() - subimg.getHeight(); y++) {
+                if (imgEqual(img.getSubimage(x, y, subimg.getWidth(), subimg.getHeight()), subimg)) {
+                    return new Point(x,y);
                 }
             }
         }
         return DUMMY;
     }
-
+    
    /**
     * Locates an image in the current screenshot. If the image does not exist in
-    * the current screenshot, throws an Exception.
+    * the current screenshot, returns the Point (-1,-1).
     *
-    * @param subimage BufferedImage you want to locate in the current screenshot
+    * @param subimage BufferedImage you want to locate in the current
+    *                 screenshot.
     * @param loc      where you want to click on the image.
     *            ______________
     *           |TL  | TC |  TR|
@@ -84,35 +81,65 @@ public class RobotPlus extends Robot {
     *           |____|____|____|
     *           |    |    |    |
     *           |BL__|_BC_|__BR|
+    * @param xOffset  Number of pixels from the left of the screen to ignore.
+    * @param yOffset  Number of pixels from the top of the screen to ignore.
     * @return         Point in screen where the top-right corner of the subimage
     *                 exists
     */
-    public Point findInScreen(BufferedImage subimage, String loc) {
-        Point pt = findInScreen(subimage);
-        if (pt.equals(DUMMY))
-            throw new RuntimeException("Image does not exist on screen.");
-
-        int w = subimage.getWidth();
-        int h = subimage.getHeight();
-        switch (loc) {
-            case "TL": break;
-            case "TC": pt.x += w/2;
-            case "TR": pt.x += w; break;
-            case "L":  pt.y += h/2; break;
-            case "C":  pt.x += w/2;
-                       pt.y += h/2; break;
-            case "R":  pt.x += w;
-                       pt.y += h/2; break;
-            case "BL": pt.y += h; break;
-            case "BC": pt.x += w/2;
-                       pt.y += h; break;
-            case "BR": pt.x += w;
-                       pt.y += h; break;
-            default:
-                throw new RuntimeException(loc + " is not a valid argument.");
+    public Point findInScreen(BufferedImage subimage, String loc, int xOffset, int yOffset) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        BufferedImage screen = this.createScreenCapture(new Rectangle(
+                xOffset, yOffset,
+                (int)screenSize.getWidth()-xOffset, (int)screenSize.getHeight()-yOffset));
+        try {
+            ImageIO.write(screen, "png", new File("screen.png"));
+        } catch (IOException ex) {
+            System.out.println("Error");
+            Logger.getLogger(RobotPlus.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        Point pt = indexOfSubImage(screen, subimage);
+        
+        if (!pt.equals(DUMMY)) {
+            int w = subimage.getWidth();
+            int h = subimage.getHeight();
+            switch (loc) {
+                case "TL": break;
+                case "TC": pt.x += w/2;
+                case "TR": pt.x += w; break;
+                case "L":  pt.y += h/2; break;
+                case "C":  pt.x += w/2;
+                           pt.y += h/2; break;
+                case "R":  pt.x += w;
+                           pt.y += h/2; break;
+                case "BL": pt.y += h; break;
+                case "BC": pt.x += w/2;
+                           pt.y += h; break;
+                case "BR": pt.x += w;
+                           pt.y += h; break;
+                default:
+                    throw new RuntimeException(loc + " is not a valid argument.");
+            }
+        }
+        
         return pt;
+    }
+
+   /**
+    * Overload of the
+    * {@link #findInScreen(java.awt.image.BufferedImage, java.lang.String, int, int)}
+    * with a default {@code xOffset=0} and {@code yOffset=0}. 
+    */
+    public Point findInScreen(BufferedImage subimage, String loc) {
+        return this.findInScreen(subimage, loc, 0, 0);
+    }
+    
+   /**
+    * Overload of the
+    * {@link #findInScreen(java.awt.image.BufferedImage, java.lang.String)}
+    * with a default {@code loc="TL"}. 
+    */
+    public Point findInScreen(BufferedImage subimage) {
+        return this.findInScreen(subimage, "TL");
     }
     
    /**
