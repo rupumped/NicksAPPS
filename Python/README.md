@@ -43,6 +43,21 @@ and store the output in `output.csv`, then you would enter the command:
 python LDAPScrape.py input.csv output.csv -cn DEV-India -ou Distribution -dc gp gl google com
 ```
 
+### MergeTeamsChannels
+Copies all messages from one Microsoft Teams channel into another.
+
+Install dependencies using pip:
+```
+pip install argparse tqdm
+```
+
+Example usage:
+```
+python MergeTeamsChannels.py 3141592-2bf0-4c6a-ab62-e778a663d4fa fc3141592-8b65-4d16-9045-fd451d78c3b3 8Ua8Q~Zjdwq3141592KEYJSSE1p-_m_IsTM68S_c_1 "https://teams.microsoft.com/l/channel/19%3A83f731415927acb93023603bbe%40thread.tacv2/Src?groupId=3141592-b478-4a89-b532-0e8bd651c3fa&tenantId=473bd761-2bf0-4c6a-ab62-e778a663d4fa" "https://teams.microsoft.com/l/channel/19%3Aa2eacca152c24e43141592ca820471%40thread.tacv2/Dest?groupId=3141592-b478-4a89-b532-0e8bd651c3fa&tenantId=473bd761-2bf0-4c6a-ab62-e778a663d4fa"
+```
+
+The script will launch a new browser window through which you'll have to log into a Microsoft account with access to both the source and destination Teams channels. If the browser fails to load the window, try refreshing a few times.
+
 ### Txt2HTML
 Converts a Google Doc into an HTML blog post.
 
