@@ -27,6 +27,15 @@ namespace napps {
 		return result;
 	}
 
+	/**
+	 * Copies a vector of unique pointers and returns a new vector with copied unique pointers.
+	 *
+	 * @param input The vector of unique pointers to copy.
+	 *
+	 * @return A new vector with copied unique pointers.
+	 *
+	 * @throws None
+	 */
 	template<typename T>
 	std::vector<std::unique_ptr<T>> copy_unique_ptr_vector(const std::vector<std::unique_ptr<T>>& input) {
 		return napps::map_vector(input, [](const auto& ptr) { return std::make_unique<T>(*ptr); });
