@@ -8,7 +8,7 @@ window.addEventListener('load', () => {
 	})
 })
 
-// This script is adapted from Murray Bourne's "KaTeX tag placement with no wrap"
+// The following script is adapted from Murray Bourne's "KaTeX tag placement with no wrap"
 // https://bourne2learn.com/math/katex/tag-placement_nowrap.html
 
 function adjustTag() {
