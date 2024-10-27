@@ -1,3 +1,13 @@
+// To prevent linebreaks immediately after an inline KaTeX block (https://github.com/KaTeX/KaTeX/issues/1233)
+window.addEventListener('load', () => {
+	document.querySelectorAll('span:has(span.katex)').forEach(katexSpan => {
+		if (katexSpan.nextSibling && katexSpan.nextSibling.nodeType === Node.TEXT_NODE && !/\s/.test(katexSpan.nextSibling.textContent.charAt(0))) {
+			katexSpan.lastChild.lastChild.lastChild.innerHTML+= katexSpan.nextSibling.textContent.charAt(0)
+			katexSpan.nextSibling.textContent = katexSpan.nextSibling.textContent.slice(1)
+		}
+	})
+})
+
 // This script is adapted from Murray Bourne's "KaTeX tag placement with no wrap"
 // https://bourne2learn.com/math/katex/tag-placement_nowrap.html
 
