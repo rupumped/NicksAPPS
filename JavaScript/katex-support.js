@@ -1,5 +1,5 @@
 // To prevent linebreaks immediately after an inline KaTeX block (https://github.com/KaTeX/KaTeX/issues/1233)
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
 	document.querySelectorAll('span:has(span.katex)').forEach(katexSpan => {
 		if (katexSpan.nextSibling && katexSpan.nextSibling.nodeType === Node.TEXT_NODE && !/\s/.test(katexSpan.nextSibling.textContent.charAt(0))) {
 			katexSpan.lastChild.lastChild.lastChild.innerHTML+= katexSpan.nextSibling.textContent.charAt(0)
