@@ -37,5 +37,5 @@ function adjustKatexTags() {
 		}
 	});
 }
-window.addEventListener('DOMContentLoaded', adjustKatexTags);
+window.addEventListener('load', adjustKatexTags);
 window.addEventListener('resize', adjustKatexTags);
