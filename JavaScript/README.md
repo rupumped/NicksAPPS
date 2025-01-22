@@ -4,6 +4,9 @@
 ### filterImage
 Generates filter to change color of monochromatic images.
 
+### findInsertionIndex
+Given a sorted array and a value, return the index at which the value should be inserted to maintain the sorted property of the array using a binary search.
+
 ### interpBilinear
 Bilinear interpolation over a rectilinear grid.
 
