@@ -1,17 +1,19 @@
 # NicksAPPS
 Miscellaneous utilities for various applications, sorted by language. Each subdirectory has its own README.
 
-[Java](https://rupumped.github.io/NicksAPPS/Java/)
+[C++](https://github.com/rupumped/NicksAPPS/tree/main/C%2B%2B)
 
-[JavaScript](https://rupumped.github.io/NicksAPPS/JavaScript/)
+[Java](https://github.com/rupumped/NicksAPPS/tree/main/Java)
 
-[MATLAB](https://rupumped.github.io/NicksAPPS/MATLAB/)
+[JavaScript](https://github.com/rupumped/NicksAPPS/tree/main/JavaScript)
 
-[Python](https://rupumped.github.io/NicksAPPS/Python/)
+[MATLAB](https://github.com/rupumped/NicksAPPS/tree/main/MATLAB)
 
-[Solidity](https://rupumped.github.io/NicksAPPS/Solidity/)
+[Python](https://github.com/rupumped/NicksAPPS/tree/main/Python)
 
-[TI-83](https://rupumped.github.io/NicksAPPS/TI-83/)
+[Solidity](https://github.com/rupumped/NicksAPPS/tree/main/Solidity)
+
+[TI-83](https://github.com/rupumped/NicksAPPS/tree/main/TI-83)
 
 ## License
 See the [license](license.txt) file for license rights and limitations (Unlicense).
