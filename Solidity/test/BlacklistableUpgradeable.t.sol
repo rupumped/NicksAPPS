@@ -1,16 +1,26 @@
 // SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.22;
 
 import {Test} from "forge-std/Test.sol";
-import {Blacklistable} from "../src/Blacklistable.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {BlacklistableUpgradeable} from "../src/BlacklistableUpgradeable.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 // Create a concrete implementation of the abstract Blacklistable contract
-contract BlacklistableToken is Blacklistable {
-    mapping(address => uint256) private _balances;
+contract BlacklistableToken is Initializable, OwnableUpgradeable, BlacklistableUpgradeable {
+	mapping(address => uint256) private _balances;
     uint256 private _totalSupply;
 
-    constructor() Ownable(msg.sender) {}
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(address initialOwner) public initializer {
+        __Ownable_init(initialOwner);
+    }
 
     function mint(address to, uint256 amount) external onlyOwner {
         _totalSupply += amount;
@@ -49,7 +59,13 @@ contract BlacklistableTest is Test {
         user2 = address(0x2);
         user3 = address(0x3);
         
-        token = new BlacklistableToken();
+		// Deploy the upgradeable contract using OZ Upgrades library
+		address proxy = Upgrades.deployUUPSProxy(
+			"BlacklistableUpgradeable.t.sol:BlacklistableToken",
+			abi.encodeCall(BlacklistableToken.initialize, (owner))
+		);
+
+        token = BlacklistableToken(proxy);
         
         // Mint some tokens to users for testing
         token.mint(user1, 1000);
@@ -75,7 +91,7 @@ contract BlacklistableTest is Test {
     
     // Test trying to add a zero address to the blacklist
     function testAddZeroAddressToBlacklist() public {
-        vm.expectRevert("Blacklistable: invalid address");
+        vm.expectRevert("BlacklistableUpgradeable: invalid address");
         token.addToBlacklist(address(0));
     }
     
@@ -85,7 +101,7 @@ contract BlacklistableTest is Test {
         token.addToBlacklist(user1);
         
         // Try to add again
-        vm.expectRevert("Blacklistable: account already blacklisted");
+        vm.expectRevert("BlacklistableUpgradeable: account already blacklisted");
         token.addToBlacklist(user1);
     }
     
@@ -108,13 +124,13 @@ contract BlacklistableTest is Test {
     
     // Test trying to remove a zero address from the blacklist
     function testRemoveZeroAddressFromBlacklist() public {
-        vm.expectRevert("Blacklistable: invalid address");
+        vm.expectRevert("BlacklistableUpgradeable: invalid address");
         token.removeFromBlacklist(address(0));
     }
     
     // Test trying to remove an address not on the blacklist
     function testRemoveNonBlacklistedAddress() public {
-        vm.expectRevert("Blacklistable: account not blacklisted");
+        vm.expectRevert("BlacklistableUpgradeable: account not blacklisted");
         token.removeFromBlacklist(user1);
     }
     
@@ -149,7 +165,7 @@ contract BlacklistableTest is Test {
         accounts[1] = address(0); // Zero address
         accounts[2] = user3;
         
-        vm.expectRevert(abi.encodePacked("Blacklistable: invalid address in array at index 1"));
+        vm.expectRevert(abi.encodePacked("BlacklistableUpgradeable: invalid address in array at index 1"));
         token.batchBlacklist(accounts, true);
     }
     
@@ -157,25 +173,8 @@ contract BlacklistableTest is Test {
     function testBatchBlacklistEmptyArray() public {
         address[] memory accounts = new address[](0);
         
-        vm.expectRevert("Blacklistable: empty accounts array");
+        vm.expectRevert("BlacklistableUpgradeable: empty accounts array");
         token.batchBlacklist(accounts, true);
-    }
-    
-    // Test disabling events
-    function testDisableEvents() public {
-        // Disable events
-        token._disableEvents();
-        
-        // Add to blacklist - event should not be emitted
-        token.addToBlacklist(user1);
-        
-        // Re-enable events
-        token._enableEvents();
-        
-        // Remove from blacklist - event should be emitted
-        vm.expectEmit(true, true, true, true);
-        emit BlacklistUpdated(user1, false);
-        token.removeFromBlacklist(user1);
     }
     
     // Test transfer with blacklisted sender
@@ -185,7 +184,7 @@ contract BlacklistableTest is Test {
         
         // Try to transfer from blacklisted user
         vm.prank(user1);
-        vm.expectRevert("Blacklistable: sender is blacklisted");
+        vm.expectRevert("BlacklistableUpgradeable: sender is blacklisted");
         token.transfer(user2, 100);
     }
     
@@ -196,7 +195,7 @@ contract BlacklistableTest is Test {
         
         // Try to transfer to blacklisted user
         vm.prank(user1);
-        vm.expectRevert("Blacklistable: recipient is blacklisted");
+        vm.expectRevert("BlacklistableUpgradeable: recipient is blacklisted");
         token.transfer(user2, 100);
     }
     

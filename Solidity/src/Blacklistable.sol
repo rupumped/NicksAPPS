@@ -1,9 +1,8 @@
-// SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.2.0) (utils/Blacklistable.sol)
+// SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.20;
 
-import {Ownable} from "../access/Ownable.sol";
-import "./Strings.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title Blacklistable
