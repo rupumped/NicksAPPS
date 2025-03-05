@@ -9,6 +9,8 @@ Miscellaneous utilities for various applications, sorted by language. Each subdi
 
 [Python](https://rupumped.github.io/NicksAPPS/Python/)
 
+[Solidity](https://rupumped.github.io/NicksAPPS/Solidity/)
+
 [TI-83](https://rupumped.github.io/NicksAPPS/TI-83/)
 
 ## License
