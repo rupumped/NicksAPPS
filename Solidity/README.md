@@ -4,11 +4,7 @@
 ### Setup Foundry
 Install Foundry using the instructions in [Foundry Book](https://book.getfoundry.sh/getting-started/installation).
 
-Then, install the foundry packages used in this library using:
-```bash
-git submodule init
-git submodule update
-```
+Then, install the foundry packages used in this library using `forge install`.
 
 You can test the contracts in this library by running `forge test`.
 
