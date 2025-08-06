@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>PNG White-to-Transparent Converter</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- SEO Description -->
+	<meta name="author" content="Nicholas S. Selby">
+	<meta name="description" content="A simple web-based tool that allows you to easily convert white areas in a PNG to transparent">
+	<link rel="canonical" href="https://rupumped.github.io/NicksAPPS/JavaScript/png-white-to-transparent.html">
+
+	<!-- Open Graph Tags -->
+	<meta property="og:title" content="PNG White-to-Transparent Converter">
+	<meta property="og:description" content="A simple web-based tool that allows you to easily convert white areas in a PNG to transparent">
+	<meta property="og:image" content="https://rupumped.github.io/og-image.jpg">
+	<meta property="og:image:width" content="1498">
+	<meta property="og:image:height" content="778">
+	<meta property="og:image:alt" content="Nicholas Selby: Engineering that Centers Users and Their Communities">
+	<meta property="og:url" content="https://rupumped.github.io/NicksAPPS/JavaScript/png-white-to-transparent.html">
+	<meta property="og:type" content="application">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #preview {
+            max-width: 100%;
+            border: 1px dashed #ccc;
+            background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                              linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                              linear-gradient(45deg, transparent 75%, #ccc 75%),
+                              linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+    </style>
+</head>
+<body>
+    <h1>White to Transparent PNG Converter</h1>
+    <input type="file" id="imageInput" accept="image/png">
+    <div>
+        <h2>Original Image</h2>
+        <img id="original" style="max-width: 100%;">
+        <h2>Converted Image</h2>
+        <img id="preview" src="">
+    </div>
+    <button id="convertBtn" style="margin-top: 10px;">Convert</button>
+    <a id="downloadLink" style="display: none;">Download Converted Image</a>
+
+    <script>
+        const imageInput = document.getElementById('original');
+        const previewImage = document.getElementById('preview');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const fileInput = document.getElementById('imageInput');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imageInput.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        convertBtn.addEventListener('click', () => {
+            if (!imageInput.src) {
+                alert('Please upload an image first');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                ctx.drawImage(img, 0, 0);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    // If pixel is white (or very close to white), make it transparent
+                    if (data[i] > 250 && data[i+1] > 250 && data[i+2] > 250) {
+                        data[i+3] = 0; // Set alpha to 0 (fully transparent)
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+                
+                // Update preview and download link
+                previewImage.src = canvas.toDataURL('image/png');
+                downloadLink.href = canvas.toDataURL('image/png');
+                downloadLink.download = 'transparent.png';
+                downloadLink.style.display = 'block';
+                downloadLink.textContent = 'Download Converted PNG';
+            };
+
+            img.src = imageInput.src;
+        });
+    </script>
+</body>
+</html>
