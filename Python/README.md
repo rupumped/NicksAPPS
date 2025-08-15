@@ -91,7 +91,7 @@ Converts a Google Doc into an HTML blog post.
 
 Download your Google Doc as a `.txt` file. Then run this script on the downloaded file:
 ```bash
-$ python txt2html input.txt
+python txt2html input.txt
 ```
 where `input.txt` is the name of the downloaded Google Doc. The script will create a file `blogpost.html` containing an HTML-formatted verstion of `input.txt`.
 
