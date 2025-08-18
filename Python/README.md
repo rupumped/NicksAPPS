@@ -32,22 +32,22 @@ pip install --upgrade --user argparse
 
 Check single directory:
 ```bash
-python backup_checker.py C:\Documents --backup-root I:\
+python IceDriveVerification.py C:\Documents --backup-root I:\
 ```
 
 Check multiple directories:
 ```bash
-python backup_checker.py C:\Documents C:\Photos C:\Projects --backup-root I:\
+python IceDriveVerification.py C:\Documents C:\Photos C:\Projects --backup-root I:\
 ```
 
 Verbose mode to see each file being checked:
 ```bash
-python backup_checker.py C:\Documents --backup-root I:\ --verbose
+python IceDriveVerification.py C:\Documents --backup-root I:\ --verbose
 ```
 
 Save list of missing files to a text file:
 ```bash
-python backup_checker.py C:\Documents --backup-root I:\ --output missing_files.txt
+python IceDriveVerification.py C:\Documents --backup-root I:\ --output missing_files.txt
 ```
 
 ### LDAPScrape
