@@ -307,7 +307,7 @@ Example:
 
 		function formatObject(str, indentSize) {
 			// Remove comments and clean up the string
-			let cleaned = str.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '').trim();
+			let cleaned = str// str.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '').trim();
 			
 			let formatted = '';
 			let indentLevel = 0;
