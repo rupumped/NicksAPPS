@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Powerline Pole Network Map</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- SEO Description -->
+	<meta name="author" content="Nicholas S. Selby">
+	<meta name="description" content="A simple web-based tool to visualize powerline pole networks">
+	<link rel="canonical" href="https://rupumped.github.io/NicksAPPS/JavaScript/powerline-pole-network-map.html">
+
+	<!-- Open Graph Tags -->
+	<meta property="og:title" content="Powerline Pole Network Map">
+	<meta property="og:description" content="A simple web-based tool to visualize powerline pole networks">
+	<meta property="og:image" content="https://rupumped.github.io/og-image.jpg">
+	<meta property="og:image:width" content="1498">
+	<meta property="og:image:height" content="778">
+	<meta property="og:image:alt" content="Nicholas Selby: Engineering that Centers Users and Their Communities">
+	<meta property="og:url" content="https://rupumped.github.io/NicksAPPS/JavaScript/powerline-pole-network-map.html">
+	<meta property="og:type" content="application">
+	
+	<!-- Style and Imported JS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.header {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 1.5rem;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+		}
+		.header h1 {
+			font-size: 1.5rem;
+			margin-bottom: 0.5rem;
+		}
+		.upload-section {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+		.file-input-wrapper {
+			position: relative;
+			overflow: hidden;
+			display: inline-block;
+		}
+		.file-input-wrapper input[type=file] {
+			position: absolute;
+			left: -9999px;
+		}
+		.file-input-label {
+			background: white;
+			color: #667eea;
+			padding: 0.75rem 1.5rem;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 600;
+			transition: all 0.3s;
+			display: inline-block;
+		}
+		.file-input-label:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+		}
+		.status {
+			background: rgba(255,255,255,0.2);
+			padding: 0.5rem 1rem;
+			border-radius: 6px;
+			font-size: 0.9rem;
+		}
+		#map {
+			flex: 1;
+			width: 100%;
+		}
+		.info-panel {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background: white;
+			padding: 1rem;
+			border-radius: 8px;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+			z-index: 1000;
+			max-width: 250px;
+		}
+		.info-panel h3 {
+			margin-bottom: 0.5rem;
+			color: #667eea;
+			font-size: 1rem;
+		}
+		.info-panel p {
+			margin: 0.25rem 0;
+			font-size: 0.85rem;
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<h1>⚡ Powerline Pole Network Map</h1>
+		<div class="upload-section">
+			<div class="file-input-wrapper">
+				<input type="file" id="csvFile" accept=".csv" />
+				<label for="csvFile" class="file-input-label">📁 Upload CSV</label>
+			</div>
+			<div class="status" id="status">No file loaded</div>
+		</div>
+	</div>
+	<div id="map"></div>
+	<div class="info-panel" id="infoPanel" style="display: none;">
+		<h3>Network Statistics</h3>
+		<p><strong>Total Poles:</strong> <span id="totalPoles">0</span></p>
+		<p><strong>Connections:</strong> <span id="totalConnections">0</span></p>
+	</div>
+
+	<script>
+		let map;
+		let polesLayer;
+		let linesLayer;
+		
+		// Initialize map
+		function initMap() {
+			map = L.map('map').setView([37.7749, -122.4194], 13);
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: '© OpenStreetMap contributors',
+				maxZoom: 19
+			}).addTo(map);
+			
+			linesLayer = L.layerGroup().addTo(map);
+			polesLayer = L.layerGroup().addTo(map);
+		}
+
+		// Parse CSV and create map
+		function processCSV(file) {
+			const status = document.getElementById('status');
+			status.textContent = 'Loading...';
+			
+			Papa.parse(file, {
+				header: true,
+				dynamicTyping: true,
+				skipEmptyLines: true,
+				complete: function(results) {
+					const data = results.data;
+					console.log(data)
+					if (data.length === 0) {
+						status.textContent = 'Error: Empty CSV';
+						return;
+					}
+					
+					// Create pole lookup map
+					const poles = {};
+					data.forEach(row => {
+						const id = row['pole ID'] || row['pole_id'] || row['id'] || row['Pole Number'];
+						const lat = parseFloat(row['latitude'] || row['lat'] || row['Latitude']);
+						const lng = parseFloat(row['longitude'] || row['lng'] || row['lon'] || row['Longitude']);
+						
+						if (id && !isNaN(lat) && !isNaN(lng)) {
+							poles[id] = {
+								id: id,
+								lat: lat,
+								lng: lng,
+								parent: row['parent pole'] || row['parent_pole'] || row['parent'] || row['Source'],
+								children: row['child poles'] || row['child_poles'] || row['children'] || row['Destination']
+							};
+						}
+					});
+					
+					if (Object.keys(poles).length === 0) {
+						status.textContent = 'Error: No valid poles found';
+						return;
+					}
+					
+					// Clear existing layers
+					linesLayer.clearLayers();
+					polesLayer.clearLayers();
+					
+					let connectionCount = 0;
+					
+					// Draw connections (lines)
+					Object.values(poles).forEach(pole => {
+						// Draw line to parent
+						if (pole.parent && poles[pole.parent]) {
+							const parent = poles[pole.parent];
+							L.polyline(
+								[[pole.lat, pole.lng], [parent.lat, parent.lng]],
+								{
+									color: '#667eea',
+									weight: 2,
+									opacity: 0.6
+								}
+							).addTo(linesLayer);
+							connectionCount++;
+						}
+					});
+					
+					// Draw poles (markers)
+					Object.values(poles).forEach(pole => {
+						const marker = L.circleMarker([pole.lat, pole.lng], {
+							radius: 6,
+							fillColor: '#764ba2',
+							color: 'white',
+							weight: 2,
+							opacity: 1,
+							fillOpacity: 0.8
+						}).addTo(polesLayer);
+						
+						marker.bindPopup(`
+							<strong>Pole ID:</strong> ${pole.id}<br>
+							<strong>Coordinates:</strong> ${pole.lat.toFixed(6)}, ${pole.lng.toFixed(6)}<br>
+							${pole.parent ? `<strong>Parent:</strong> ${pole.parent}<br>` : ''}
+							${pole.children ? `<strong>Children:</strong> ${pole.children}` : ''}
+						`);
+					});
+					
+					// Fit map to show all poles
+					const bounds = L.latLngBounds(
+						Object.values(poles).map(p => [p.lat, p.lng])
+					);
+					map.fitBounds(bounds, { padding: [50, 50] });
+					
+					// Update status and info panel
+					status.textContent = `Loaded ${Object.keys(poles).length} poles`;
+					document.getElementById('totalPoles').textContent = Object.keys(poles).length;
+					document.getElementById('totalConnections').textContent = connectionCount;
+					document.getElementById('infoPanel').style.display = 'block';
+				},
+				error: function(error) {
+					status.textContent = 'Error parsing CSV';
+					console.error(error);
+				}
+			});
+		}
+
+		// File upload handler
+		document.getElementById('csvFile').addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if (file) {
+				processCSV(file);
+			}
+		});
+
+		// Initialize map on load
+		initMap();
+	</script>
+</body>
+</html>
