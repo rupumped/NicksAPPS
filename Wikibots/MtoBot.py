@@ -29,7 +29,11 @@ def get_items():
 		qid = r["item"]["value"].split("/")[-1]   # e.g. "Q12345"
 		sw_label = r["swLabel"]["value"]           # e.g. "Mto Tana"
 		river_name = sw_label.removeprefix("Mto ").strip()
-		en_label = f"{river_name} River"
+		if river_name.endswith(")") and "(" in river_name:
+			base, paren = river_name.rsplit("(", 1)
+			en_label = f"{base.strip()} River ({paren}"
+		else:
+			en_label = f"{river_name} River"
 		items.append((qid, en_label))
 	return items
 
