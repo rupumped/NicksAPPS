@@ -40,6 +40,28 @@ namespace napps {
 	std::vector<std::unique_ptr<T>> copy_unique_ptr_vector(const std::vector<std::unique_ptr<T>>& input) {
 		return napps::map_vector(input, [](const auto& ptr) { return std::make_unique<T>(*ptr); });
 	}
+
+	/**
+	 * Finds the index of a given key in a vector.
+	 *
+	 * @tparam T The type of elements in the vector.
+	 *
+	 * @param v The vector in which to search.
+	 * @param key The key for which to search.
+	 *
+	 * @return The index of the key in the vector, or -1 if the key is not found.
+	 *
+	 * @throws None.
+	 */
+	template<typename T>
+	int indexOf(std::vector<T> v, T key) {
+		std::vector<T>::iterator itr = std::find(v.begin(), v.end(), key);
+
+		if (itr != v.cend()) {
+			return std::distance(v.begin(), itr);
+		}
+		return -1;
+	}
 }
 
 #endif // NAPPS_H
